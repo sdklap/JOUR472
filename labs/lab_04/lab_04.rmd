@@ -24,6 +24,9 @@ You'll need to load three packages for this: the tidyverse, lubridate and janito
 ```{r}
 # Turn off scientific notation
 options(scipen=999)
+library(tidyverse)
+library(lubridate)
+library(refinr)
 
 # load your packages
 
@@ -41,6 +44,10 @@ You'll need to load one data set, a CSV file of Maryland campaign expenditures l
 
 ```{r}
 # Load the Maryland expenditures data table
+maryland_expenses <- read_csv("data/maryland_expenses.csv")
+
+# Display it
+maryland_expenses
 ```
 
 ## Answer questions
@@ -53,29 +60,91 @@ You'll need to load one data set, a CSV file of Maryland campaign expenditures l
    4. When you are done standardizing `payee_clean`, export it as a new CSV file to your data folder, *giving it a different name* and read it back into RStudio as a new dataframe.
    5. Using that `payee_clean` column in your new dataframe, calculate the total amount of Facebook spending by each committee and present the results showing the committee that spent the most first.
 
-**A1.**
+**A1.** Jain Ashwani Friends Of spent the most on facebook with $62357.38 amount.
 
 ```{r}
+maryland_expenses <- read_csv("data/maryland_expenses.csv") |> clean_names()
+maryland_expenses <- maryland_expenses |> mutate(expenditure_date=mdy(expenditure_date))
+
+media_expenses <- maryland_expenses |>
+   filter(str_detect(expense_category, "Media")) |> 
+  filter(!is.na(payee_name))
+
+write_csv(media_expenses, "data/media_expenses.csv")
+
+new_media_expenses_csv |> 
+  filter(str_detect(payee_clean, "FACEBOOK")) |> 
+  group_by(committee_name) |> 
+  summarize(total = sum(amount)) |> 
+  arrange(desc(total))
 ```
 
 **Q2.** Let's do some research on the top committees from question 1. Look up the top 10 spenders: if they are candidate committees, what offices were they running for? If they were not candidates, what issues do they seem to care about? Write some sentences answering those questions, then go the Facebook ad library ([https://www.facebook.com/ads/library/?active_status=all&ad_type=political_and_issue_ads&country=US&sort_data\\[direction\\]=desc&sort_data\\[mode\\]=relevancy_monthly_grouped&media_type=all](https://www.facebook.com/ads/library/?active_status=all&ad_type=political_and_issue_ads&country=US&sort_data\%5Bdirection\%5D=desc&sort_data\%5Bmode\%5D=relevancy_monthly_grouped&media_type=all){.uri}) and look for ads from the top spender. What do you notice about the the information provided about those ads?
 
 **A2.** 
 
+Jain Ashwani Friends of: Ashwani Jain ran for Governor
+Franchot Anderson-Walker for Maryland Slate: Peter Franchot ran for Governor and his running mate was Monique Anderson-Walker
+Franchot Peter Friends Of: This is also Peter Franchot
+Casa in Action PAC: 122,000 members mobilizing millions of voters to elect progressive leaders supporting immigrants and communities of color
+Boniface Billy Friends Of: Billy Boniface ran for Hartford County Executive
+Baron Jon (Jonathan) for Maryland: Jon Baron ran for Governor
+Jasani Salimah Friends of: Salimah Jasani ran for Baltimore City School Board
+WFP National Pac - Non-Contribution Account: Building a multicultural party of working people to transform the country
+King and Siri for Maryland Slate: John King ran for Governor and his running mate was Michelle Siri
+Shuman Eve T. Friends of: Eve Shuman ran for district 3 county council
+
 **Q3.** Given the list of top spenders in A1 and the primary results for governor (<https://elections.maryland.gov/elections/2022/primary_results/gen_results_2022_1.html>), who is missing from that Q1 list? Did those campaigns run Facebook ads? Who are the biggest recipients of media expenses by the Democratic primary winner for governor (HINT: that person has two committees, the second one with his running mate)?
 
-**A3.** 
+**A3.** Missing: 
+Rushern L. Baker, III and Nancy Navarro
+Douglas F. Gansler and Candace Hollingsworth
+Ralph W. Jaffe and Mark Greben
+Wes Moore and Aruna Miller
+Tom Perez and Shannon Sneed
+Jerome M. Segal and Justinian M. Dispenza
+
+None of these campaigns ran facebook ads, but did spend on online advertising.
+
+Wes Moore spent the most money at SKDK.
+
 
 ```{r}
+new_media_expenses_csv |> 
+  filter(str_detect(payee_clean, "FACEBOOK")) |> 
+  group_by(committee_name) |> 
+  summarize(total = sum(amount)) |> 
+  arrange(desc(total))
 ```
 
 **Q4.** The media expense data you cleaned also has a standardized purpose column. Write code to generate a list of the committees with the total amount of spending on online advertising. How does this list compare to the one from Q1 about top Facebook spenders? Of the top 5 committees who spent the most on Facebook ads from Q1, are there any that appear to have spent *all* of their online advertising dollars on Facebook?
 
 **A4.** 
 
+List from Q1:
+Jain Ashwani Friends of: Ashwani Jain ran for Governor
+Franchot Anderson-Walker for Maryland Slate: Peter Franchot ran for Governor and his running mate was Monique Anderson-Walker
+Franchot Peter Friends Of: This is also Peter Franchot
+Casa in Action PAC: 122,000 members mobilizing millions of voters to elect progressive leaders supporting immigrants and communities of color
+Boniface Billy Friends Of: Billy Boniface ran for Hartford County Executive
+Baron Jon (Jonathan) for Maryland: Jon Baron ran for Governor
+Jasani Salimah Friends of: Salimah Jasani ran for Baltimore City School Board
+WFP National Pac - Non-Contribution Account: Building a multicultural party of working people to transform the country
+King and Siri for Maryland Slate: John King ran for Governor and his running mate was Michelle Siri
+Shuman Eve T. Friends of: Eve Shuman ran for district 3 county council
+
+How it compares: none of the top facebook spenders are on the top advertising list. This list also has less gubenatorial candidates on it.
+
+Ashwani Jain and Salimah Jasani spent all of their online advertising dollars on facebook. King and Siri for Maryland Slate spent all of their online advertising budget on Facebook except for one payment. 
+
 ```{r}
+new_media_expenses_csv |> 
+  filter(str_detect(expense_purpose, "Online Advertising")) |> 
+  group_by(committee_name) |> 
+  summarize(total = sum(amount)) |> 
+  arrange(desc(total))
 ```
 
 **Q5** Your editor asks you to summarize your findings about spending on Facebook by Maryland political candidates. How much do we know and what don't we know? What's the best story idea you've found here?
 
-**A5**
+**A5** The best story I found is that Moore, the winner, spent no money on facebook but tons of money on online advertising.
