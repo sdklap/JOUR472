@@ -1,0 +1,182 @@
+---
+title: "WP_Police_Homicides"
+author: "Bridget Shaela Robert Sydney"
+date: "2023-10-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+# turn off sci notation
+options(scipen=999)
+#load libraries
+library(tidyverse)
+library(lubridate)
+library(refinr)
+
+```
+
+
+```{r}
+read_csv("data/homicide-data.csv")
+
+```
+
+
+```{r}
+#creating a variable to filter the data for Baltimore city alone
+baltimore_homicide <- read_csv("data/homicide-data.csv") |>
+  filter(city=='Baltimore')
+
+```
+####"As Baltimore has seen a stunning surge of violence, with nearly a killing each day for the past three years in a city of 600,000, homicide arrests have plummeted." (A killing each day for three straight years = 1,095 killings)
+
+```{r}
+#Here we are calculating the # of homicides in the past 3 years, 2015, 2016, and 2017 to assess the previous statement.
+ baltimore_homicide |>
+ filter(reported_date > 20141231)|>
+  summarise(count_deaths =n())
+
+```
+### total deaths over the past 3 years was 1002. That is almost 1095 (a killing each day)
+
+```{r}
+#checking the number of homicides divided by the number of days in the past 3 years. 
+1002/(365*3)
+
+```
+###Context: Washington Post writes "...homicide arrests have plummeted. City police made an arrest in 41 percent of homicides in 2014; last year, the rate was just 27 percent, a 14 percentage point drop." We want to check this fact with the following code blocks. First we will check to see if the above mentioned arrest rates are correct. Then we will check to see if arrest rates have fallen since over the past three years (2015, 2016, and 2017). 
+
+```{r}
+###calculating the number of homicides in 2014
+baltimore_homicide|>
+  filter(reported_date >20131231)|>
+  filter(reported_date <20150101)|>
+  summarise(count_homicides =n())
+
+```
+###Answer: there were 211 homicides in Baltimore in 2014. 
+```{r}
+#counting the number of arrests made that closed open homicide cases in 2014. 
+baltimore_homicide|>
+  filter(reported_date >20131231)|>
+  filter(reported_date <20150101)|>
+  filter(disposition == 'Closed by arrest')|>
+  summarise(count_arrests = n())
+```
+###There were 86 homicide cases closed by arrest in 2014. 
+
+```{r}
+#dividing total arrests by total homicides
+86/211
+
+```
+###Answer: The Washington Post correctly calculated the arrest rate for homicides in the city of Baltimore in 2014 as 40.75 or roughly 41%. Now lets calcualte the arrest rate for homicides in 2017. Was it really 27% as mentioned in the Washington Post article? 
+
+```{r}
+#counting total homicides in 2017
+baltimore_homicide|>
+  filter(reported_date >20161231)|>
+  filter(reported_date <20180101)|>
+  summarise(count_homicides = n())
+
+```
+
+###Answer:There were 340 homicides in Baltimore in 2017. 
+
+```{r}
+#counting total homicide cases closed by arrest in 2017
+baltimore_homicide|>
+  filter(reported_date >20161231)|>
+  filter(reported_date <20180101)|>
+  filter(disposition == 'Closed by arrest')|>
+  summarise(count_arrests = n())
+```
+###Answer. There were 93 homicide cases closed by arrest in 2017. 
+
+```{r}
+#dividing total arrests by total homicides
+93/340
+```
+###Answer: Yes, the arrest rate for homicides in Baltimore in 2017 was 27.35 or roughly 27%. Now we want to see if homicide arrest rates plumeted over 2015 and 2015 as well. So we will calculate those. 
+
+
+```{r}
+#counting total homicides in 2016
+baltimore_homicide|>
+  filter(reported_date >20151231)|>
+  filter(reported_date <20170101)|>
+  summarise(count_homicides = n())
+```
+###There were 320 homicides in Baltimore in 2016. 
+
+```{r}
+#counting total homicide cases closed by arrest in 2016
+baltimore_homicide|>
+  filter(reported_date >20151231)|>
+  filter(reported_date <20170101)|>
+  filter(disposition == 'Closed by arrest')|>
+  summarise(count_arrests = n())
+```
+###There were 72 homicide cases closed by arrest in 2016
+
+```{r}
+72/320
+```
+
+###Anser: the arrest rate in 2016 was roughly 23%. That is lower than 2014's homicide arrest rate. Now we will check for 2015. 
+
+```{r}
+#counting total homicides in 2015
+baltimore_homicide|>
+  filter(reported_date >20141231)|>
+  filter(reported_date <20160101)|>
+  summarise(count_homicides = n())
+```
+###There were 342 homicides repored in Baltimore in 2015
+
+```{r}
+#counting total homicide cases closed by arrest in 2015
+baltimore_homicide|>
+  filter(reported_date >20141231)|>
+  filter(reported_date <20160101)|>
+  filter(disposition == 'Closed by arrest')|>
+  summarise(count_arrests = n())
+```
+### There were 342 homicides in Baltimore in 2015. The police closed 87 of those cases by arresting someone. Now we need to see the arrest rate. 
+```{r}
+87/342
+
+```
+### Answer: The arrest rate in 2015 was 25%. So in verifying the statement 
+
+###"As Baltimore has seen a stunning surge of violence, with nearly a killing each day for the past three years in a city of 600,000, homicide arrests have plummeted. City police made an arrest in 41 percent of homicides in 2014; last year, the rate was just 27 percent, a 14 percentage point drop."
+
+###We have reviewed the data and found that, yes Baltimore had a arrest rate in 2014 of roughly 41% is correct. Arrest rates plummetted in the three years mentioned -2015, 2016, 2017 - with arrest rates at 25%, 23%, and 27% respectively. 
+
+
+
+
+
