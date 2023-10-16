@@ -44,90 +44,75 @@ Data for 2014-
 
 ```{r} 
 #Here we are calculating the number of homicides in Baltimore in 2014
-homicide_data |> 
+homicide_2014 <- homicide_data |> 
   filter(str_detect(reported_date, "2014")) |> 
   group_by(city) |> 
   summarize(count_city = n()) |> 
   arrange(desc(count_city))
 
-```
-
-```{r}
-#Here we are calculating the number of homicides in Baltimore in 2014 that were open and had no arrest
-homicide_data |> 
-  filter(str_detect(disposition, "Open/No arrest")) |> 
-  filter(str_detect(reported_date, "2014")) |> 
-  group_by(city) |> 
-  summarize(count_city = n()) |> 
-  arrange(desc(count_city))
+homicide_2014
 
 ```
 
 
 ```{r}
-#Here we are calculating the number of homicides in Baltimore in 2014 that were closed and had no arrest
-homicide_data |> 
-  filter(str_detect(disposition, "Closed without arrest")) |> 
+#Here we are calculating the number of homicides in Baltimore in 2014 that were closed by arrest
+homicide_arrest_2014 <- homicide_data |> 
+  filter(str_detect(disposition, "Closed by arrest")) |> 
   filter(str_detect(reported_date, "2014")) |> 
   group_by(city) |> 
   summarize(count_city = n()) |> 
   arrange(desc(count_city))
 
+homicide_arrest_2014
 ```
+
 
 
 math:
 ```{r}
-#Here we are finding the percent of no arrests in both closed and open cases in 2014
-13+112
+#Here we are finding the percent of closed by arrest cases in 2014
 
-(125/211)*100
+(86/211)*100
 ```
-125 non arrests in 2014 out of 211 homicides, 59.24% no arrest
+86 arrests in 2014 out of 211 homicides, 40.75% no arrest
 
 Data for 2017-
 
 ```{r}
 #Here we are calculating the number of homicides in Baltimore in 2017
-homicide_data |> 
+homicide_2017 <- homicide_data |> 
   filter(str_detect(reported_date, "2017")) |> 
   group_by(city) |> 
   summarize(count_city = n()) |> 
   arrange(desc(count_city))
+
+homicide_2017
 
 ```
 
 
 ```{r}
-#Here we are calculating the number of homicides in Baltimore in 2017 that were open and had no arrest
-homicide_data |> 
-  filter(str_detect(disposition, "Open/No arrest")) |> 
+#Here we are calculating the number of homicides in Baltimore in 2017 that were closed by arrest
+homicide_arrest_2017 <- homicide_data |> 
+  filter(str_detect(disposition, "Closed by arrest")) |> 
   filter(str_detect(reported_date, "2017")) |> 
   group_by(city) |> 
   summarize(count_city = n()) |> 
   arrange(desc(count_city))
 
+homicide_arrest_2017
 ```
 
-```{r}
-#Here we are calculating the number of homicides in Baltimore in 2017 that were closed and had no arrest
-homicide_data |> 
-  filter(str_detect(disposition, "Closed without arrest")) |> 
-  filter(str_detect(reported_date, "2017")) |> 
-  group_by(city) |> 
-  summarize(count_city = n()) |> 
-  arrange(desc(count_city))
 
-```
 
 math:
 ```{r}
-#Here we are finding the percent of no arrests in both closed and open cases in 2017
-11+236
+#Here we are finding the percent of arrests in 2017
 
-(247/340)*100
+(93/340)*100
 ```
 
-247 non arrests in 2017 out of 340 homicides, 72.65% no arrest
+93 arrests in 2017 out of 340 homicides, 27.35% arrest
 
 Answer: We can confirm that Baltimore makes less arrests in 2017 than in 2014.
