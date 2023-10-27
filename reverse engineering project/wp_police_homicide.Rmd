@@ -35,9 +35,10 @@ options(scipen=999)
 library(tidyverse)
 library(lubridate)
 library(refinr)
-
+library(janitor)
 ```
 
+THIS IS JUST QUESTION #5!!!
 
 ```{r}
 read_csv("data/homicide-data.csv")
@@ -51,132 +52,165 @@ baltimore_homicide <- read_csv("data/homicide-data.csv") |>
   filter(city=='Baltimore')
 
 ```
-####"As Baltimore has seen a stunning surge of violence, with nearly a killing each day for the past three years in a city of 600,000, homicide arrests have plummeted." (A killing each day for three straight years = 1,095 killings)
+
+#The 5th statement we need to check is: For most of the decade before 2015, Baltimore’s annual homicide arrest rate hovered at about 40 percent.
 
 ```{r}
-#Here we are calculating the # of homicides in the past 3 years, 2015, 2016, and 2017 to assess the previous statement.
- baltimore_homicide |>
- filter(reported_date > 20141231)|>
-  summarise(count_deaths =n())
+#first, we need to find out how many homicides there were each year in Baltimore. Then, we need to find out how many of those homicides ended in an arrest. For formatting sake, I did all 3 steps per year in one chunk of code. I also rounded the percent to two decimal places.
 
-```
-### total deaths over the past 3 years was 1002. That is almost 1095 (a killing each day)
-
-```{r}
-#checking the number of homicides divided by the number of days in the past 3 years. 
-1002/(365*3)
-
-```
-###Context: Washington Post writes "...homicide arrests have plummeted. City police made an arrest in 41 percent of homicides in 2014; last year, the rate was just 27 percent, a 14 percentage point drop." We want to check this fact with the following code blocks. First we will check to see if the above mentioned arrest rates are correct. Then we will check to see if arrest rates have fallen since over the past three years (2015, 2016, and 2017). 
-
-```{r}
-###calculating the number of homicides in 2014
+#2007
 baltimore_homicide|>
-  filter(reported_date >20131231)|>
-  filter(reported_date <20150101)|>
-  summarise(count_homicides =n())
-
-```
-###Answer: there were 211 homicides in Baltimore in 2014. 
-```{r}
-#counting the number of arrests made that closed open homicide cases in 2014. 
-baltimore_homicide|>
-  filter(reported_date >20131231)|>
-  filter(reported_date <20150101)|>
-  filter(disposition == 'Closed by arrest')|>
-  summarise(count_arrests = n())
-```
-###There were 86 homicide cases closed by arrest in 2014. 
-
-```{r}
-#dividing total arrests by total homicides
-86/211
-
-```
-###Answer: The Washington Post correctly calculated the arrest rate for homicides in the city of Baltimore in 2014 as 40.75 or roughly 41%. Now lets calcualte the arrest rate for homicides in 2017. Was it really 27% as mentioned in the Washington Post article? 
-
-```{r}
-#counting total homicides in 2017
-baltimore_homicide|>
-  filter(reported_date >20161231)|>
-  filter(reported_date <20180101)|>
+  filter(reported_date >20070101)|>
+  filter(reported_date <20071231)|>
   summarise(count_homicides = n())
 
-```
-
-###Answer:There were 340 homicides in Baltimore in 2017. 
-
-```{r}
-#counting total homicide cases closed by arrest in 2017
 baltimore_homicide|>
-  filter(reported_date >20161231)|>
-  filter(reported_date <20180101)|>
+  filter(reported_date >20070101)|>
+  filter(reported_date <20071231)|>
   filter(disposition == 'Closed by arrest')|>
-  summarise(count_arrests = n())
-```
-###Answer. There were 93 homicide cases closed by arrest in 2017. 
-
-```{r}
-#dividing total arrests by total homicides
-93/340
-```
-###Answer: Yes, the arrest rate for homicides in Baltimore in 2017 was 27.35 or roughly 27%. Now we want to see if homicide arrest rates plumeted over 2015 and 2015 as well. So we will calculate those. 
-
-
-```{r}
-#counting total homicides in 2016
-baltimore_homicide|>
-  filter(reported_date >20151231)|>
-  filter(reported_date <20170101)|>
   summarise(count_homicides = n())
+
+(117/279)*100
 ```
-###There were 320 homicides in Baltimore in 2016. 
+
+2007 arrest rate: 41.94%
 
 ```{r}
-#counting total homicide cases closed by arrest in 2016
+#2008
 baltimore_homicide|>
-  filter(reported_date >20151231)|>
-  filter(reported_date <20170101)|>
-  filter(disposition == 'Closed by arrest')|>
-  summarise(count_arrests = n())
-```
-###There were 72 homicide cases closed by arrest in 2016
-
-```{r}
-72/320
-```
-
-###Anser: the arrest rate in 2016 was roughly 23%. That is lower than 2014's homicide arrest rate. Now we will check for 2015. 
-
-```{r}
-#counting total homicides in 2015
-baltimore_homicide|>
-  filter(reported_date >20141231)|>
-  filter(reported_date <20160101)|>
+  filter(reported_date >20080101)|>
+  filter(reported_date <20081231)|>
   summarise(count_homicides = n())
-```
-###There were 342 homicides repored in Baltimore in 2015
 
-```{r}
-#counting total homicide cases closed by arrest in 2015
 baltimore_homicide|>
-  filter(reported_date >20141231)|>
-  filter(reported_date <20160101)|>
+  filter(reported_date >20080101)|>
+  filter(reported_date <20081231)|>
   filter(disposition == 'Closed by arrest')|>
-  summarise(count_arrests = n())
+  summarise(count_homicides = n())
+
+(94/233)*100
 ```
-### There were 342 homicides in Baltimore in 2015. The police closed 87 of those cases by arresting someone. Now we need to see the arrest rate. 
+
+2008 arrest rate: 40.34%
+
 ```{r}
-87/342
+#2009
+baltimore_homicide|>
+  filter(reported_date >20090101)|>
+  filter(reported_date <20091231)|>
+  summarise(count_homicides = n())
+
+baltimore_homicide|>
+  filter(reported_date >20090101)|>
+  filter(reported_date <20091231)|>
+  filter(disposition == 'Closed by arrest')|>
+  summarise(count_homicides = n())
+
+(102/234)*100
 
 ```
-### Answer: The arrest rate in 2015 was 25%. So in verifying the statement 
-
-###"As Baltimore has seen a stunning surge of violence, with nearly a killing each day for the past three years in a city of 600,000, homicide arrests have plummeted. City police made an arrest in 41 percent of homicides in 2014; last year, the rate was just 27 percent, a 14 percentage point drop."
-
-###We have reviewed the data and found that, yes Baltimore had a arrest rate in 2014 of roughly 41% is correct. Arrest rates plummetted in the three years mentioned -2015, 2016, 2017 - with arrest rates at 25%, 23%, and 27% respectively. 
+2009 arrest rate: 43.59%
 
 
+```{r}
+#2010
+baltimore_homicide|>
+  filter(reported_date >20100101)|>
+  filter(reported_date <20101231)|>
+  summarise(count_homicides = n())
 
+baltimore_homicide|>
+  filter(reported_date >20100101)|>
+  filter(reported_date <20101231)|>
+  filter(disposition == 'Closed by arrest')|>
+  summarise(count_homicides = n())
 
+(93/220)*100
 
+```
+2010 arrest rate: 42.27%
+
+```{r}
+#2011
+baltimore_homicide|>
+  filter(reported_date >20110101)|>
+  filter(reported_date <20111231)|>
+  summarise(count_homicides = n())
+
+baltimore_homicide|>
+  filter(reported_date >20110101)|>
+  filter(reported_date <20111231)|>
+  filter(disposition == 'Closed by arrest')|>
+  summarise(count_homicides = n())
+
+(76/195)*100
+
+```
+
+2011 arrest rate: 38.97%
+
+```{r}
+#2012
+baltimore_homicide|>
+  filter(reported_date >20120101)|>
+  filter(reported_date <20121231)|>
+  summarise(count_homicides = n())
+
+baltimore_homicide|>
+  filter(reported_date >20120101)|>
+  filter(reported_date <20121231)|>
+  filter(disposition == 'Closed by arrest')|>
+  summarise(count_homicides = n())
+
+(86/215)*100
+
+```
+
+2012 arrest rate: 40.00%
+
+```{r}
+#2013
+baltimore_homicide|>
+  filter(reported_date >20130101)|>
+  filter(reported_date <20131231)|>
+  summarise(count_homicides = n())
+
+baltimore_homicide|>
+  filter(reported_date >20130101)|>
+  filter(reported_date <20131231)|>
+  filter(disposition == 'Closed by arrest')|>
+  summarise(count_homicides = n())
+
+(92/230)*100
+
+```
+
+2013 arrest rate: 40.00%
+
+```{r}
+#2014
+baltimore_homicide|>
+  filter(reported_date >20140101)|>
+  filter(reported_date <20141231)|>
+  summarise(count_homicides = n())
+
+baltimore_homicide|>
+  filter(reported_date >20140101)|>
+  filter(reported_date <20141231)|>
+  filter(disposition == 'Closed by arrest')|>
+  summarise(count_homicides = n())
+
+(84/208)*100
+
+```
+
+2014 arrest rate: 40.38%
+
+```{r}
+#Now, I am calculating the average arrest rate from 2007 to 2014.
+(41.94+40.34+43.59+42.27+38.97+40+40+40.38)/8
+```
+
+The average arrest rate is 40.94%. 
+
+#Answer: The article is correct, but not as exact as it could be. A closer number to day was the arrest rate was about 41%. 
