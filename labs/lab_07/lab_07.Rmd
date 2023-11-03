@@ -83,31 +83,50 @@ md |>
 
 Which zip code has the highest rate of calls? Which has the lowest?
 
-**A3** 
+**A3** 20877 has the highest, 20707 has the lowest
 
 ```{r}
-montgomery_2022_overdoses <- read_csv("/Users/sdklap/JOUR472/JOUR472/labs/lab_07/data/montgomery_2022_overdoses.csv") 
+montgomery_2022_overdoses <- read_csv("/Users/sdklap/JOUR472/JOUR472/labs/lab_07/data/montgomery_2022_overdoses.csv") |> 
+  mutate(zip = as.character(zip))
 
 montgomery_2022_overdoses_by_zipcode <- montgomery_2022_overdoses |> 
   group_by(zip) |>
     summarize(count_calls = n())
 
-acs5_geography <- get_acs(geography = "state",
-              variables = c(over_18 = "B01001"),
+md <- get_acs(geography = "zcta",
+              variables = c(over_18 = "B09021_001"),
               state = "MD",
-              year = 2022)
+              year = 2019)
+
+montgomery_2022_overdoses_by_zipcode_with_population_over_18 <- montgomery_2022_overdoses_by_zipcode |> inner_join(md, by=c('zip'='GEOID')) |> rename(over_18_population=estimate) |> mutate(rate_of_calls_per_1000=(count_calls/over_18_population)*1000) |> arrange(rate_of_calls_per_1000)
 
 
 ```
 
 **Q4** Using [CensusReporter.org](https://censusreporter.org/), examine the zip codes with the highest and lowest rates and compare and contrast their demographic profiles. Is there a story here?
 
-**A4** 
+**A4** The first thing I looked at is where the zip codes are. 20707 is Laurel, West Laurel, and Konterra. 20877 is Gaithersburg. I have been to both places, and both are very nice neighborhoods.
+
+Secomnd, I looked at poverty level. Income in the past 12 months below poverty level is 8.4% for 20707, and 15.4% for 20877.
+
+Then, I looked at race, since I don't think there is a story based on poverty. Laurel is more diverse than Gaithersberg, but none of the numbers here are sticking out to me. 
+
+Next, I went to google to find out there are 2 rehab centers in the 20877 zip code, but there are also 2 in the 20707 so that does not explain it either.
+
+After that, I went back to census reporter and looked at the population of each zip code. 31,538 people live in 20707, and 34,321 people live in 20877, so there is not a major difference there either. 
+
+I also looked at median age. For 20707 it is 328, and for 2877 it is 37.6.
+
+I think that the story would be hard to back up with census data. It is so confusing to me that two cities with such similar demographics are the least and most called.
 
 **Q5** Go back to your joined dataframe from Q3 and add two more columns representing the minimum and maximum populations based on the estimate and margin of error, then calculate per capita rates for each. Do you get the same two zip codes for the highest and lowest as you did before? Does that give you more or less confidence in your answers to Q3?
 
-**A5** 
+**A5** 20707 is still the lowest, 20877 is still the highest
 
 ```{r}
+montgomery_2022_overdoses_by_zipcode_with_population_over_18 <- montgomery_2022_overdoses_by_zipcode_with_population_over_18 |> 
+  mutate(min=(over_18_population-moe), max=(over_18_population+moe)) |> 
+  mutate(rate_of_calls_per_100_min=(count_calls/min)*1000) |> 
+   mutate(rate_of_calls_per_100_max=(count_calls/max)*1000)
 ```
 
