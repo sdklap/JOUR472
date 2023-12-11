@@ -89,7 +89,7 @@ If you are trying to create a list of unique words, R will treat differences in 
 
 ### Task 5: Trying out unique
 
-**Task** Run the following code and describe what the `unique` function does to the original list of words. **Answer**
+**Task** Run the following code and describe what the `unique` function does to the original list of words. **Answer** It removes the double "dog" and "cat"
 
 ```{r}
 a_list_of_words <- c("Dog", "dog", "dog", "cat", "cat", ",")
@@ -100,7 +100,7 @@ Fortunately, this is a solved problem with tidytext, which has a function called
 
 ### Task 6: Trying out unnest_tokens
 
-**Task** Run the following code and describe the output of using the `unnest_tokens` function. **Answer**
+**Task** Run the following code and describe the output of using the `unnest_tokens` function. **Answer** It looks like it pulled up a list of every single unique word in the data
 
 ```{r}
 unique_words <- releases |> select(text) |>
@@ -110,7 +110,7 @@ View(unique_words)
 
 ### Task 7: Make a column chart
 
-**Task** Run the following code and describe what the resulting graphic shows. Is it interesting? **Answer**
+**Task** Run the following code and describe what the resulting graphic shows. Is it interesting? **Answer** I would not say this is very interesting. This is what I would expect from the data.  
 
 Now we can look at the top words in this dataset. Let's limit ourselves to making a plot of the top 25 words, and we'll use the function `count` to do the counting:
 
@@ -160,7 +160,7 @@ From there, we can get a simple word frequency by just grouping them together an
 
 ### Task 9: Using anti_join
 
-**Task** Run the following code and describe the results. Is it more interesting than before? **Answer**
+**Task** Run the following code and describe the results. Is it more interesting than before? **Answer** This is more interesting than before. this shows words that would be useful instead of words like "the" and "a"
 
 ```{r}
 unique_words |>
@@ -198,7 +198,7 @@ Then we can create top 10 lists for both of them and compare:
 
 ### Task 11: Create dataframes with the top 10 words in each year
 
-**Task** Run the following code and describe the results. **Answer**
+**Task** Run the following code and describe the results. **Answer** This is the amount of times the word was used and the percent. "Health" was used much less in 2023 than 2021 and 2022. I would assume this is because of COVID. 
 
 ```{r}
 unique_words_2021 |>
@@ -243,7 +243,7 @@ So this block is is going to do the following:
 
 ### Task 12: Create a dataframe with the top 10 two-word phrases for 2021
 
-**Task** Run the following code and describe the results. **Answer**
+**Task** Run the following code and describe the results. **Answer** This is the same format as the previous table, but with two-word phrases. The most used was covid 19, which makes sense.
 
 ```{r}
 releases |>
@@ -263,7 +263,7 @@ And we already have a different, more nuanced result. Health was among the top s
 
 ### Task 13: Create a dataframe with the top 10 two-word phrases for 2022
 
-**Task** Run the following code and describe the results. **Answer**
+**Task** Run the following code and describe the results. **Answer** This is slightly different than before since it is just for 2022. "project location" is the most common phrase. 
 
 ```{r}
 releases |>
@@ -283,7 +283,7 @@ And 2023?
 
 ### Task 14: Create a dataframe with the top 10 two-word phrases for 2023
 
-**Task** Run the following code and describe the results. **Answer**
+**Task** Run the following code and describe the results. **Answer** Phrases overall were used less than 2022. This is probably because 2023 is not over yet. I wonder why "oral health" was so prevelant. 
 
 ```{r}
 releases |>
@@ -309,7 +309,7 @@ Another popular use of text analysis is to measure the sentiment of a word - whe
 
 ### Task 15: Load the bing lexicon and produce sentiments for our 2021-2023 unique words
 
-**Task** Run the following code and describe the results. Do any of the sentiments seem incorrect or counter-intuitive? **Answer**
+**Task** Run the following code and describe the results. Do any of the sentiments seem incorrect or counter-intuitive? **Answer** This is so interesting that a computer can do this. "Trump" being positive seems to be incorrect in my mind, because of the meaning of the word and the former president. Based on a scan of the first 75 ish words for all three years, it seems fairly correct. 
 
 ```{r}
 bing <- get_sentiments("bing")
