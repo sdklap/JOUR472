@@ -137,7 +137,7 @@ wh_records_combined_dates_and_names <- wh_records_combined_names|>
 ```
 ```{r}
 #adding a column for month, day of the week, week in the year, and hour in the day
-wh_records_combined_dates_and_names |> 
+wh_records_combined_dates_and_names <- wh_records_combined_dates_and_names |> 
   mutate (hour = hour(toa_cln)) |> 
   mutate (month = month(toa_cln)) |> 
   mutate (weekdays = weekdays(toa_cln)) |> 
@@ -150,6 +150,234 @@ wh_records_combined_dates_and_names_wo_extra <- wh_records_combined_dates_and_na
   select(-last_name, -first_name, -middle_initial, -bdgnbr, -poa, -tod, -pod, -last_updated_by, -post, -terminal_suffix, -terminal_suffix, -visitee_last_name, -visitee_first_name, -access_type)
 ```
 
+Question 1: Who visits the most? 
+Answer: Michael N Herzog visits the white house the most with 108 visits. After doing research I found that he's Israel's Ambassador to the U.S.
+```{r}
+wh_records_combined_names |>
+  group_by(full_name_visitor) |>
+  summarize(
+    total_visits=n()
+  ) |>
+  arrange(desc(total_visits))
+```
+
+*******Who gets the most visitors? - Robert
+How frequently does the president get visitors? Robert, which % of all visits are the POTUS. 
+
+Question 4: What time of the day is the busiest for visitors? Which day of the week? Which week of the year? 
+```{r}
+#most common hour- 10 A.M. 
+wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  summarise(count_hours = n())
+
+#most common month- July
+wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(month) |> 
+  summarise(count_hours = n())
+
+#most common week- week 29 (mid/end July)
+wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(week) |> 
+  summarise(count_hours = n())
+
+#most common weekday- Saturday
+wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(weekdays) |> 
+  summarise(count_hours = n()) 
+```
+
+Bridget question
+
+
+Added question- Who visited/was visited early and late?
+```{r}
+#people who were visited very early or very late (I took this to mean outside of working hours)
+
+#before 9 am, no visitors from hour 2 or hour 3
+
+hour_1_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 1)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_4_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 4)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_5_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 5)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_6_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 6)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_7_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 7)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_8_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 8)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+#5 pm and after/17:00 and after
+
+hour_17_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 17)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_18_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 18)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_19_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 19)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_20_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 20)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_21_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 21)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_22_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 22)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+hour_23_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 23)|> 
+  count(full_names_visitee) |> 
+  arrange(desc(n))
+
+##hour 8 has the most people visited, Ed Teleky has most visitors off hours
+```
+
+```{r}
+#people who are a visitor very early or very late (I took this to mean outside of working hours)
+
+#before 9 am, no visitors from hour 2 or hour 3
+
+visitor_hour_1_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 1)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_2_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 2)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_3_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 3)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_4_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 4)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_5_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 5)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_6_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 6)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_7_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 7)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_8_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 8)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+#5 pm and after/17:00 and after
+
+visitor_hour_17_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 17)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_18_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 18)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_19_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 19)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_20_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 20)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_21_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 21)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_22_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 22)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+visitor_hour_23_wh <- wh_records_combined_dates_and_names_wo_extra |> 
+  group_by(hour) |> 
+  filter(hour == 23)|> 
+  count(full_names_visitor) |> 
+  arrange(desc(n))
+
+#hour 8 has the most v
+```
 
 ***Discussion*** 
 Flaws and limitations hindering us answering our questions: after cleaning up the data, we believe we will be able to answer question 1 regarding who visited the white house most in 2022 and 2023. 
